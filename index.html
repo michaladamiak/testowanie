@@ -13,32 +13,24 @@
 </head>
 <body>
     <div id="links"></div>
-    <py-script>
-        from pyodide.http import pyfetch
-        import asyncio
+<py-script>
+    from bs4 import BeautifulSoup
+    from js import document, XMLHttpRequest
 
-        async def funkcja():
+    url = "https://midjourney.com"
+    req = XMLHttpRequest.new()
+    req.open("GET", url, False)
+    req.send(None)
+    soup = BeautifulSoup(req.response, "html.parser")
 
-            try:
-                response = await pyfetch(
-                    url ="https://www.wp.pl/",
-                    method='GET'
-                )
-                if response.ok:
-                    data = await response.json()
-                    return data
-            except:
-                return None
+    links = soup.find_all("a")
 
-        async def funkcja2():
-            summary = await funkcja()
-            if summary is None:
-                return None
-            else:
-                return summary
-        
-        asyncio.ensure_future(funkcja())
+    linkDiv = document.getElementById("links")
+    linkDiv.innerHTML = "<span>Links for " + url + "</span><br/><br/>"
 
-    </py-script>
+    for link in links:
+        full_url = link.get("href")
+        linkDiv.innerHTML += full_url + "<br/>"
+</py-script>
 </body>
 </html>
