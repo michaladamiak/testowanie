@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <title>Clickbait detection</title>
+    <py-config>
+        packages = ['pandas', 'beautifulsoup4', 'matplotlib', 'scikit-learn']
+        [[fetch]]
+        files = ['./model.pkl', './vectorizer.pkl', './odm.txt']
+    </py-config>
+</head>
+<body>
+    <div id="links"></div>
+    <py-script>
+        from pyodide.http import pyfetch
+        import asyncio
+
+        async def funkcja():
+
+            try:
+                response = await pyfetch(
+                    url ="https://www.wp.pl/",
+                    method='GET'
+                )
+                if response.ok:
+                    data = await response.json()
+                    return data
+            except:
+                return None
+
+        async def funkcja2():
+            summary = await funkcja()
+            if summary is None:
+                return None
+            else:
+                return summary
+        
+        asyncio.ensure_future(funkcja())
+
+    </py-script>
+</body>
+</html>
